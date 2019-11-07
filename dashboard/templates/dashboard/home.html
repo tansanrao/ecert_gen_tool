@@ -1,0 +1,268 @@
+{% extends "dashboard/base_site.html" %}
+
+{% block title %} Dashboard {% endblock title %}
+
+{% block stylesheets %}
+    {{ block.super }}
+    <link href="/static/vendors/dropzone/dist/min/dropzone.min.css" rel="stylesheet">
+{% endblock stylesheets %}
+
+{% block content %}
+    <div class="right_col" role="main">
+        <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Welcome!</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+                        <div class="bs-example" data-example-id="simple-jumbotron">
+                            <div class="jumbotron">
+                                <h1>Hello, world!</h1>
+                                <p>This tool is used to generate certificates for print or email using data from a CSV
+                                    file.</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="col-md-12 col-sm-12 col-xs-12">
+                <div class="x_panel">
+                    <div class="x_title">
+                        <h2>Cert-Gen Wizard</h2>
+                        <ul class="nav navbar-right panel_toolbox">
+                            <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                            </li>
+                            <li><a class="close-link"><i class="fa fa-close"></i></a>
+                            </li>
+                        </ul>
+                        <div class="clearfix"></div>
+                    </div>
+                    <div class="x_content">
+
+
+                        <!-- Smart Wizard -->
+                        <p>This Wizard will guide you through generating certificates.</p>
+                        <div id="wizard" class="form_wizard wizard_horizontal">
+                            <ul class="wizard_steps">
+                                <li>
+                                    <a href="#step-1">
+                                        <span class="step_no">1</span>
+                                        <span class="step_descr">
+                                        Step 1<br/>
+                                        <small>CSV Upload</small>
+                                    </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-2">
+                                        <span class="step_no">2</span>
+                                        <span class="step_descr">
+                                        Step 2<br/>
+                                        <small>Certificate Type</small>
+                                    </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-3">
+                                        <span class="step_no">3</span>
+                                        <span class="step_descr">
+                                        Step 3<br/>
+                                        <small>Export Type</small>
+                                    </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a href="#step-4">
+                                        <span class="step_no">4</span>
+                                        <span class="step_descr">
+                                        Step 4<br/>
+                                        <small>Downloads</small>
+                                    </span>
+                                    </a>
+                                </li>
+                            </ul>
+                            <div id="step-1">
+                                <div class="x_content">
+                                    <p>Drag your CSV File to the box below or click on the box to select a file.</p>
+                                    <form method="post" enctype="multipart/form-data" action="home.html"
+                                          class="dropzone" id="myDropzone">
+                                        {% csrf_token %}
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="step-2">
+                                <h2 class="StepTitle">Certificate Type</h2>
+                                <div class="x_content">
+                                    <br/>
+                                    <form id="cert-type-form" class="form-horizontal form-label-left">
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="cert-type">Certificate
+                                                Type
+                                                <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <select id="cert-type" required="required"
+                                                        class="form-control col-md-7 col-xs-12">
+                                                    <option value="">---</option>
+                                                    <option value="email">Email</option>
+                                                    <option value="print">Print</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="step-3">
+                                <h2 class="StepTitle">Export Type</h2>
+                                <div class="x_content">
+                                    <br/>
+                                    <form id="export-type-form" class="form-horizontal form-label-left">
+
+                                        <div class="form-group">
+                                            <label class="control-label col-md-3 col-sm-3 col-xs-12" for="export-type">Export
+                                                Type
+                                                <span class="required">*</span>
+                                            </label>
+                                            <div class="col-md-6 col-sm-6 col-xs-12">
+                                                <select id="export-type" required="required"
+                                                        class="form-control col-md-7 col-xs-12">
+                                                    <option value="">---</option>
+                                                    <option value="image">Images</option>
+                                                    <option value="pdf">PDFs</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div id="step-4">
+                                <h2 class="StepTitle">Download Files</h2>
+                                <button onclick="generateCerts()">Generate Certs</button>
+                            </div>
+
+                        </div>
+                        <!-- End SmartWizard Content -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
+
+{% block javascripts %}
+    {{ block.super }}
+    <!-- Chart.js -->
+    <script src="/static/vendors/Chart.js/dist/Chart.min.js"></script>
+    <!-- gauge.js -->
+    <script src="/static/vendors/gauge.js/dist/gauge.min.js"></script>
+    <!-- Skycons -->
+    <script src="/static/vendors/skycons/skycons.js"></script>
+    <!-- Flot -->
+    <script src="/static/vendors/Flot/jquery.flot.js"></script>
+    <script src="/static/vendors/Flot/jquery.flot.pie.js"></script>
+    <script src="/static/vendors/Flot/jquery.flot.time.js"></script>
+    <script src="/static/vendors/Flot/jquery.flot.stack.js"></script>
+    <script src="/static/vendors/Flot/jquery.flot.resize.js"></script>
+    <!-- Flot plugins -->
+    <script src="/static/vendors/flot.orderbars/js/jquery.flot.orderBars.js"></script>
+    <script src="/static/vendors/flot-spline/js/jquery.flot.spline.min.js"></script>
+    <script src="/static/vendors/flot.curvedlines/curvedLines.js"></script>
+    <!-- DateJS -->
+    <script src="/static/vendors/DateJS/build/date.js"></script>
+    <!-- JQVMap -->
+    <script src="/static/vendors/jqvmap/dist/jquery.vmap.js"></script>
+    <script src="/static/vendors/jqvmap/dist/maps/jquery.vmap.world.js"></script>
+    <script src="/static/vendors/jqvmap/examples/js/jquery.vmap.sampledata.js"></script>
+    <!-- jQuery Smart Wizard -->
+    <script src="/static/vendors/jQuery-Smart-Wizard/js/jquery.smartWizard.js"></script>
+    <!-- Dropzone.js -->
+    <script src="/static/vendors/dropzone/dist/min/dropzone.min.js"></script>
+    <script>
+        $.ajaxSetup({
+            beforeSend: function (xhr, settings) {
+                function getCookie(name) {
+                    var cookieValue = null;
+                    if (document.cookie && document.cookie != '') {
+                        var cookies = document.cookie.split(';');
+                        for (var i = 0; i < cookies.length; i++) {
+                            var cookie = jQuery.trim(cookies[i]);
+                            // Does this cookie string begin with the name we want?
+                            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                                break;
+                            }
+                        }
+                    }
+                    return cookieValue;
+                }
+
+                if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+                    // Only send the token to relative URLs i.e. locally.
+                    xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+                }
+            }
+        });
+
+        let uploaded_file_url = '';
+        let certgen_cert_type = '';
+        let certgen_export_type = '';
+        let uploaded_file_id = '';
+
+        Dropzone.options.myDropzone = {
+            paramName: "file", // The name that will be used to transfer the file
+            maxFilesize: 2, // MB
+            maxFiles: 1,
+            acceptedFiles: ".csv",
+            init: function () {
+                this.on("success", function (file, res) {
+                    uploaded_file_url = JSON.parse(res).uploaded_file_url
+                    uploaded_file_id = JSON.parse(res).uploaded_file_id
+                    console.log(uploaded_file_url)
+                });
+            },
+            accept: function (file, done) {
+                done();
+            }
+        };
+        if ($("#cert-type").length) {
+            $("#cert-type").on("change", function (eventObject) {
+                certgen_cert_type = $(this).children("option:selected").val();
+                ;
+                console.log(certgen_cert_type)
+            })
+        }
+        if ($("#export-type").length) {
+            $("#export-type").on("change", function (eventObject) {
+                certgen_export_type = $(this).children("option:selected").val();
+                console.log(certgen_export_type)
+            })
+        }
+
+        generateCerts = function () {
+            let context = {
+                uploaded_file_url: uploaded_file_url,
+                uploaded_file_id: uploaded_file_id,
+                certgen_export_type: certgen_export_type,
+                certgen_cert_type: certgen_cert_type
+            };
+
+            $.post("generateCerts", JSON.stringify(context), function (data, status) {
+                alert("Status: "+ status + "\nFiles Saved to: " + data)
+            })
+        }
+    </script>
+{% endblock javascripts %}
